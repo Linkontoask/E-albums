@@ -1,16 +1,17 @@
 <template>
   <div class="E-main_content">
-    <div>
+    <div class="content">
       <ul>
-        <li v-for="(item, index) in data" :key="item.id">
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src="item.src" :alt="item.des" class="image">
-            <div style="padding: 14px;">
-              <span>{{ item.des }}</span>
-              <div class="bottom clearfix">
-                <time class="time">{{ item.date }}</time>
-              </div>
-            </div>
+        <li v-for="(item, index) in data" :key="index" @click="frontAlbum(index)">
+          <el-card class="box-card">
+          <img v-if="item.url" :src="'http://127.0.0.1:8000'+item.url" :alt="item.name">
+          <el-card class="box-card" v-if="!item.url">
+            <div v-if="!item.url" class="normal">相册里还没有照片哦,赶快来上传第一张吧!</div>
+          </el-card>
+          <div>
+            <h4>{{ item.title }}</h4>
+            <p class="car"><span>{{ item.point }}</span><span>{{ item.createTime }}</span></p>
+          </div>
           </el-card>
         </li>
       </ul>
@@ -19,28 +20,38 @@
 </template>
 
 <script>
+import axios from '../router/axios'
+
 export default {
   name: 'E-main_content',
   data () {
     return {
-        data: [{
-          des: '北海一日游', // 描述
-          src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOATA8mjLxD0MqvjhfgeAqVbnsOodlHgTP0OaNEzMFsBGBVxZT', // 地址
-          date: '2018-8-9', // 拍摄时间
-          relevant: ['何沁','黄文章'], // 照片有谁
-          group: ['旅游','恋爱'], // 分类
-          point: '广西北海', // 地点
-          type: 'picture' // 视频还是图片
-        },{
-          des: '桂林一日游', // 描述
-          src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyk6zOHyWwjpMXoStdzXX_NgtmAArzU9IvdsujQ4kOKZiA1FCC', // 地址
-          date: '2018-8-9', // 拍摄时间
-          relevant: ['何沁','黄文章'], // 照片有谁
-          group: ['旅游','恋爱'], // 分类
-          point: '广西桂林', // 地点
-          type: 'picture' // 视频还是图片
-        }]
+        data: ''
     }
+  },
+
+  methods: {
+    frontAlbum(index) {
+      console.log(this.data[index].id)
+      this.init(this.data[index].id)
+    },
+    init(id) {
+      var vm = this;
+      var temp = {};
+      if (id) {
+        temp['album_id'] = id;
+      } else {
+        temp['type'] = 'all';
+      }
+      axios.post('/api/get_album/', temp, (e) => {
+        vm.data = e.data;
+        console.log(e);
+      });
+    }
+  },
+
+  mounted: function () {
+    this.init();
   }
 }
 </script>
@@ -48,27 +59,57 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .E-main_content {
-  width: 70%;
+  position: relative;
+  width: 90%;
+  height: calc(100% - 58px);
+  overflow: auto;
   margin: 0 auto;
-  margin-top: -64px;
-  li {
-    position: relative;
-    list-style-type: none;
-    margin-top: 24px;
-    img {
-      width: 100%;
-    }
-    summary {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: calc(100% - 8px);
-      height: 36px;
-      line-height: 36px;
-      color: white;
-      text-align: left;
-      padding: 4px;
-      background: linear-gradient(90deg, #00000094, #ffffff8c);
+  .content {
+    ul {
+      padding-top: 12px;
+      li:first-child {
+        margin: 0;
+      }
+      li {
+        width: 100%;
+        margin: 0 auto;
+        list-style-type: none;
+        overflow: hidden;
+        margin-top: 12px;
+        padding-bottom: 12px;
+        .normal {
+          font-size: 13px;
+          padding: 4px;
+        }
+        div {
+          h4 {
+            font-size: 16px;
+            margin: 4px 0;
+            color: #606266;
+          }
+          p {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+        .car {
+          span {
+            color: #7f7f7f;
+          }
+          span:first-child {
+            background: url("../assets/point_icon.png") no-repeat left center;
+            background-size: 12px 16px;
+            text-indent: 18px;
+          }
+          span:last-child {
+          }
+        }
+        img {
+          width: 100%;
+          border-radius: 8px;
+        }
+      }
     }
   }
 }
