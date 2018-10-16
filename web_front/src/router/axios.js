@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-function axios_get() {
-  axios.get(url, params)
+function axios_get(url, params, callback) {
+  axios.get(url, {params: params})
     .then((response) => {
       if (callback) {
         callback(response.data)

@@ -1,8 +1,9 @@
 <template>
-  <div class="E-upload">
+  <div class="E-upload e_link">
     <el-dialog
-      :visible.sync="dialogVisible"
+      :visible="dialogVisible"
       :show-close="false"
+      :before-close="beforeClose"
       width="80%">
       <img src="../../assets/upload_bg.png" alt="" style="width: 100%;position: absolute;left: 0;top: 0;z-index: -1;">
       <el-upload
@@ -13,8 +14,7 @@
         :on-change="upload_change"
         :on-remove="upload_remove"
         :auto-upload="false"
-        :multiple="false"
-        :limit="1"
+        :multiple="true"
         :data="data"
         :file-list="fileList">
         <el-button size="small" type="primary"><img src="../../assets/upload.png" alt="">选择文件</el-button>
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="input">
-        <svg viewBox="0 0 320 300">
+        <svg viewBox="0 0 320 300" id="upload_svg">
           <defs>
             <linearGradient
               inkscape:collect="always"
@@ -39,11 +39,11 @@
               y2="193.49992"
               gradientUnits="userSpaceOnUse">
               <stop
-                style="stop-color:#ff00ff;"
+                style="stop-color:#fad0c4;"
                 offset="0"
                 id="stop876" />
               <stop
-                style="stop-color:#ff0000;"
+                style="stop-color:#ffd1ff;"
                 offset="1"
                 id="stop878" />
             </linearGradient>
@@ -73,6 +73,7 @@
 <script>
   import anime from 'animejs'
   import axios from '../../router/axios'
+  import bus from '../../router/bus'
 
 export default {
   name: 'E-upload',
@@ -101,6 +102,10 @@ export default {
     }
   },
   methods: {
+    beforeClose(done) {
+      done();
+      this.$emit('shutdown');
+    },
     submit() {
       console.log(this.data);
       this.$refs.upload.submit();
@@ -108,6 +113,8 @@ export default {
     success(response, file, fileList) {
       console.log(response, file, fileList);
       if (response.data.e === 0) {
+        bus.$emit('update');
+        this.dialogVisible = false;
         this.$message({
           type: 'success',
           message: response.data.code
@@ -124,8 +131,10 @@ export default {
     upload_change(file, fileList) {
       if (fileList.length !== 0) {
         document.querySelector('.el-upload-list').style.width = '130px';
+        document.querySelector('.el-upload-list').style.height = '46px';
       } else {
         document.querySelector('.el-upload-list').style.width = '0';
+        document.querySelector('.el-upload-list').style.height = '0';
       }
     },
     upload_remove(file, fileList) {
@@ -153,7 +162,7 @@ export default {
         case 2 : value = -730; break;
       }
       this.current = anime({
-        targets: 'path',
+        targets: '#upload_svg path',
         strokeDashoffset: {
           value: value,
           duration: 700,
@@ -218,7 +227,7 @@ export default {
   path {
     fill: none;
     stroke: url(#linearGradient);;
-    stroke-width: 3;
+    stroke-width: 8;
     stroke-dasharray: 240, 1386;
   }
 }

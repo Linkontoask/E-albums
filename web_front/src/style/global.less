@@ -10,6 +10,7 @@
 }
 .upload_main .el-upload-list {
   display: inline-block;
+  overflow: auto;
 }
 .type .e-label .el-radio__label {
   color: #681023;
@@ -25,7 +26,6 @@
 .input .el-input__inner {
   background: none;
   border: none;
-
 }
 .input .el-input-group, .input .el-select {
   position: absolute;
@@ -35,6 +35,7 @@
   //border: 1px solid #f2465b;
   border-radius: 6px;
   width: 80%;
+  z-index: 2;
 }
 .input .el-select {
   margin-top: 136px;
@@ -58,35 +59,36 @@
   background: none;
   color: #681023;
   padding: 0 12px;
+
 }
 .upload_main .el-icon-close {
   display: inline-block;
   padding-right: 12px;
 
 }
-.E-upload .el-dialog__header{
+.e_link .el-dialog__header{
   padding: 0;
 }
-.E-upload .el-dialog{
+.e_link .el-dialog{
   background: none;
   box-shadow: none;
 }
-.E-upload .el-dialog__body{
+.e_link .el-dialog__body{
   padding: 10px 0;
 }
-.E-upload .el-button{
+.e_link .el-button{
   background: #fff;
   border: none;
   border-radius: 12px;
   color: rgb(104,16,35);
 }
-.E-upload .el-button span {
+.e_link .el-button span {
   display: flex;
   align-items: center;
 
   letter-spacing: 4px;
 }
-.E-upload .el-button span img{
+.e_link .el-button span img{
   display: inline;
   width: 24px;
   margin-right: 8px;

@@ -1,26 +1,35 @@
-<template>
-  <div class="E-main">
-    <div class="banner">
-      <div class="sidebar"></div>
-      <div class="switch" @touchend="switchType">
-        <span :style="type === '相册' ? 'left: 0px;' : 'left: 50%;'"></span>
-        <em :style="type === '相册' ?  'color: white' : ''">相册</em>
-        <em :style="type !== '相册' ?  'color: white' : ''">视频</em>
-      </div>
-      <div class="search"></div>
+<template xmlns:v-finger="http://www.w3.org/1999/xhtml">
+  <div class="E-main"
+       v-finger:swipe="swipe"
+       v-finger:press-move="pressMove">
+    <div class="album_cls" ref="album_cls">
+      <h1>hhhh</h1>
     </div>
-    <e_content></e_content>
-    <div class="new">
-      <div class="el_new" @click.stop="add_album_video(0)">新建相册</div>
-      <div class="el_new" @click.stop="add_album_video(1)">上传</div>
-      <div style="position:relative;z-index: 2;width: 100%;height: 100%;" @click.stop="pop"></div>
-      <div class="icon">
-        <span :style="forward ? 'transform: rotate(0deg)' : 'transform: rotate(180deg)'"></span>
-        <span :style="forward ? 'transform: rotate(270deg)' : 'transform: rotate(0deg)'"></span>
+    <main id="main">
+      <div id="models" v-finger:tap.stop="tap"></div>
+      <div class="banner">
+        <div class="sidebar" :class="focus_sidebar ? 'focus_sidebar ': 'blur_sidebar'" v-finger:tap.stop="unwind"></div>
+        <div class="switch" @touchend="switchType">
+          <span :style="type === '相册' ? 'left: 0px;' : 'left: 50%;'"></span>
+          <em :style="type === '相册' ?  'color: white' : ''">相册</em>
+          <em :style="type !== '相册' ?  'color: white' : ''">视频</em>
+        </div>
+        <div class="search"></div>
       </div>
-    </div>
+      <e_content></e_content>
+      <div class="new">
+        <div class="el_new" @click.stop="add_album_video(1)">新建相册</div>
+        <div class="el_new" @click.stop="add_album_video(0)">上传</div>
+        <div style="position:relative;z-index: 2;width: 100%;height: 100%;" @click.stop="pop"></div>
+        <div class="icon">
+          <span :style="forward ? 'transform: rotate(0deg)' : 'transform: rotate(180deg)'"></span>
+          <span :style="forward ? 'transform: rotate(270deg)' : 'transform: rotate(0deg)'"></span>
+        </div>
+      </div>
+    </main>
 
     <e_upload v-if="show_upload" ref="upload" @shutdown="closeUpload"></e_upload>
+    <e_create v-if="show_create" ref="create" @shutdown="closeCreate"></e_create>
   </div>
 </template>
 
@@ -28,17 +37,25 @@
   import anime from 'animejs'
   import e_content from './E-main_content.vue'
   import e_upload from './base/upload'
+  import e_create from './base/create'
+  import mojs from 'mo-js'
 
 export default {
   name: 'E-main',
 
-  components: {e_content, e_upload, },
+  components: {e_content, e_upload, e_create, },
   data () {
     return {
       type: '相册',
       forward: true,
       show_upload: false,
-      e_anmime: null
+      show_create: false,
+      e_anmime: null,
+      WIDTH: 240,
+      el_cls: null,
+      main: null,
+      models: null,
+      focus_sidebar: false
     }
   },
   watch: {
@@ -47,6 +64,35 @@ export default {
     }
   },
   methods: {
+    pressMove(e) {
+
+    },
+    unwind() {
+      this.swipe({direction: 'Right'});
+    },
+    tap() {
+      this.swipe({direction: 'Left'});
+    },
+    swipe(e) {
+      if (!this.el_cls) this.el_cls = document.querySelector('.album_cls');
+      if (!this.main) this.main = document.querySelector('main');
+      if (!this.models) this.models = document.querySelector('#models');
+      if (e.direction === 'Right') {
+        this.el_cls.style.left = 0;
+        this.main.style.left = `${this.WIDTH}px`;
+        this.models.style.display = `block`;
+        this.focus_sidebar = true;
+      }
+      if (e.direction === 'Left') {
+        this.el_cls.style.left = `-${this.WIDTH}px`;
+        this.main.style.left = 0;
+        this.models.style.display = `none`;
+        this.focus_sidebar = false;
+      }
+    },
+    closeCreate() {
+      this.show_create = false;
+    },
     closeUpload() {
       this.show_upload = false;
     },
@@ -58,9 +104,11 @@ export default {
           this.$refs.upload.open(true);
         })
       } else {
+        this.show_create = true;
+        this.$nextTick(() => {
+          this.$refs.create.open(true);
+        })
       }
-
-
     },
     pop() {
       document.querySelector('.new').style.transform = 'scale(1.1)';
@@ -86,6 +134,20 @@ export default {
     switchType() {
         this.type === '相册' ? this.type = '视频' : this.type = '相册'
     }
+  },
+
+  mounted: function () {
+    const burst = new mojs.Burst({
+      radius:   { 0: 100 },
+      count:    10,
+      children: {
+        shape:      'polygon',
+        points:     7,
+        fill:       { 'cyan' : 'yellow' },
+        duration:   1000,
+        delay:      'stagger(20, rand(0, 25))'
+      }
+    });
   }
 }
 </script>
@@ -94,7 +156,38 @@ export default {
 <style scoped lang="less">
 .E-main {
   height: 100%;
+  main {
+    position: relative;
+    left: 0;
+    height: 100%;
+    transition: all 0.4s;
+  }
+  #models {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    opacity: 0.4;
+    z-index: 1000;
+    transition: all 0.4s;
+  }
+  .album_cls {
+    position: fixed;
+    left: -240px;
+    top: 0;
+    width: 240px;
+    height: 100%;
+    color: white;
+    background-color: #f2465b;
+    transition: all 0.4s;
+    z-index: 999;
+  }
   .banner {
+    position: relative;
+    left: 0;
     background: url("../assets/banner_bg.jpg") repeat-x left top;
     background-size: 100% 88px;
     width: 100%;
@@ -102,10 +195,19 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.4s;
+    .focus_sidebar {
+      background-image: url("../assets/sidebar_focus.png");
+      background-size: 24px 24px;
+    }
+    .blur_sidebar {
+      background-image: url("../assets/sidebar.png");
+      background-size: 24px 24px;
+    }
     .sidebar {
       display: inline-block;
-      background: url("../assets/sidebar.png") no-repeat center;
-      background-size: 24px 24px;
+      background-repeat: no-repeat;
+      background-position: center;
       width: 40px;
       height: 30px;
       padding-left: 64px;

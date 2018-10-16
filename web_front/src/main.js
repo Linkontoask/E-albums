@@ -5,10 +5,15 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import AlloyFinger from 'alloyfinger'
+import AlloyFingerPlugin from 'alloyfinger/vue/alloy_finger.vue'
 
 import './style/global.less'
 
 Vue.use(ElementUI);
+Vue.use(AlloyFingerPlugin, {
+  AlloyFinger
+});
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

@@ -17,5 +17,7 @@ html, body, ul, li, p {margin: 0;padding: 0;font-size: 14px;}
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  overflow: hidden;
+  user-select: none;
 }
 </style>
