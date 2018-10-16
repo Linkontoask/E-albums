@@ -3,7 +3,17 @@
        v-finger:swipe="swipe"
        v-finger:press-move="pressMove">
     <div class="album_cls" ref="album_cls">
-      <h1>hhhh</h1>
+      <div class="head">
+        <img src="/static/IMG_3570.JPG" alt="">
+      </div>
+      <aside class="cls_content">
+        <h1>相册分类</h1>
+        <ul>
+          <li v-for="(item, index) in type_pictures" @touchend.stop="aside_current(item)">
+            <em>{{ item.label }}</em>
+          </li>
+        </ul>
+      </aside>
     </div>
     <main id="main">
       <div id="models" v-finger:tap.stop="tap"></div>
@@ -46,14 +56,31 @@ export default {
   components: {e_content, e_upload, e_create, },
   data () {
     return {
+      type_pictures: [{
+        label: '旅游',
+        value: '0'
+      },{
+        label: '在丰都',
+        value: '1'
+      },{
+        label: '在重庆',
+        value: '2'
+      },{
+        label: '在湖南',
+        value: '3'
+      },{
+        label: '日常(默认类型)',
+        value: '4'
+      }],
       type: '相册',
       forward: true,
       show_upload: false,
       show_create: false,
       e_anmime: null,
-      WIDTH: 240,
+      WIDTH: 180,
       el_cls: null,
       main: null,
+      el_new: null,
       models: null,
       focus_sidebar: false
     }
@@ -64,6 +91,9 @@ export default {
     }
   },
   methods: {
+    aside_current(row) {
+      console.log(row);
+    },
     pressMove(e) {
 
     },
@@ -76,16 +106,19 @@ export default {
     swipe(e) {
       if (!this.el_cls) this.el_cls = document.querySelector('.album_cls');
       if (!this.main) this.main = document.querySelector('main');
+      if (!this.el_new) this.el_new = document.querySelector('.new');
       if (!this.models) this.models = document.querySelector('#models');
       if (e.direction === 'Right') {
         this.el_cls.style.left = 0;
         this.main.style.left = `${this.WIDTH}px`;
+        this.el_new.style.bottom = `-64px`;
         this.models.style.display = `block`;
         this.focus_sidebar = true;
       }
       if (e.direction === 'Left') {
         this.el_cls.style.left = `-${this.WIDTH}px`;
         this.main.style.left = 0;
+        this.el_new.style.bottom = `12px`;
         this.models.style.display = `none`;
         this.focus_sidebar = false;
       }
@@ -176,14 +209,45 @@ export default {
   }
   .album_cls {
     position: fixed;
-    left: -240px;
+    left: -180px;
     top: 0;
-    width: 240px;
+    width: 180px;
     height: 100%;
     color: white;
     background-color: #f2465b;
     transition: all 0.4s;
     z-index: 999;
+    .cls_content {
+      h1 {
+        width: calc(100% - 44px);
+        font-weight: normal;
+        padding: 0 12px 2px;
+        margin: 12px auto;
+        border-bottom: 1px solid #ffeded;
+      }
+      ul {
+        width: calc(100% - 12px);
+        padding: 0 6px;
+        li {
+          height: 34px;
+          line-height: 34px;
+          padding-left: 24px;
+          em {
+            font-style: normal;
+          }
+        }
+      }
+    }
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 24px;
+      img {
+        width: 64px;
+        border-radius: 50%;
+      }
+    }
   }
   .banner {
     position: relative;

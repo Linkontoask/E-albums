@@ -35,12 +35,12 @@ export default {
   methods: {
     frontAlbum(index) {
       console.log(this.data[index].id)
-      this.init(this.data[index].id)
+      this.init(this.data[index].id, this.data[index].url)
     },
-    init(id) {
+    init(id, url) {
       var vm = this;
       var temp = {};
-      if (id) {
+      if (id && url) {
         temp['album_id'] = id;
       } else {
         temp['type'] = 'all';

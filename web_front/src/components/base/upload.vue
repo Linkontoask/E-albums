@@ -28,15 +28,15 @@
         </div>
       </div>
       <div class="input">
-        <svg viewBox="0 0 320 300" id="upload_svg">
+        <svg viewBox="0 0 251 147" id="upload_svg">
           <defs>
             <linearGradient
               inkscape:collect="always"
               id="linearGradient"
-              x1="13"
-              y1="193.49992"
-              x2="307"
-              y2="193.49992"
+              x1="1"
+              y1="1"
+              x2="480"
+              y2="1"
               gradientUnits="userSpaceOnUse">
               <stop
                 style="stop-color:#fad0c4;"
@@ -48,15 +48,25 @@
                 id="stop878" />
             </linearGradient>
           </defs>
-          <path d="m 40,120.00016 239.99984,-3.2e-4 c 0,0 24.99263,0.79932 25.00016,35.00016 0.008,34.20084 -25.00016,35 -25.00016,35 h -239.99984 c 0,-0.0205 -25,4.01348 -25,38.5 0,34.48652 25,38.5 25,38.5 h 215 c 0,0 20,-0.99604 20,-25 0,-24.00396 -20,-25 -20,-25 h -190 c 0,0 -20,1.71033 -20,25 0,24.00396 20,25 20,25 h 168.57143" />
+          <path d="M23.8,4.5H226.73s9.61,21.78,0,40.83H23.8s-10.68,21.78,0,40.84H226.73s8.54,24.5,0,40.83H23.8" />
         </svg>
         <el-input placeholder="" v-model="data.title" @focus="moveLine(0)">
-          <template slot="prepend">标题</template>
+          <template slot="prepend" style="background-color: #f7bcf1">标题</template>
         </el-input>
         <el-input placeholder="" v-model="data.point" @focus="moveLine(1)">
           <template slot="prepend">地点</template>
         </el-input>
-        <el-select v-model="data.album_id" placeholder="" @focus="moveLine(2)">
+        <el-select v-model="data.type_picture" placeholder="" @focus="moveLine(2)" >
+          <span slot="prefix">类型</span>
+          <el-option
+            v-for="item in type_pictures"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="data.album_id" placeholder="" @focus="moveLine(3)" style="margin-top: 153px;">
+          <span slot="prefix">相册</span>
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -82,20 +92,27 @@ export default {
   data () {
     return {
       data: {
-        type: 'picture'
+        type: 'picture',
+        type_picture: '4'
       },
       options: [],
-      typeData: [{
-        'type': 'picture',
-        'name': '图片',
-        'label': '1',
-        'url': 'static/picture.png'
+      type_pictures: [{
+        label: '旅游',
+        value: '0'
       },{
-        'type': 'media',
-        'name': '视频',
-        'label': '2',
-        'url': 'static/media.png'
+        label: '在丰都',
+        value: '1'
+      },{
+        label: '在重庆',
+        value: '2'
+      },{
+        label: '在湖南',
+        value: '3'
+      },{
+        label: '日常(默认类型)',
+        value: '4'
       }],
+      typeData: [{'type': 'picture', 'name': '图片', 'label': '1', 'url': 'static/picture.png'},{'type': 'media', 'name': '视频', 'label': '2', 'url': 'static/media.png'}],
       dialogVisible: false,
       fileList: [],
       current: null
@@ -158,8 +175,9 @@ export default {
       var value = 0;
       switch (val) {
         case 0 : value = 0; break;
-        case 1 : value = -336; break;
-        case 2 : value = -730; break;
+        case 1 : value = -245; break;
+        case 2 : value = -489; break;
+        case 3 : value = -735; break;
       }
       this.current = anime({
         targets: '#upload_svg path',
@@ -169,7 +187,7 @@ export default {
           easing: 'easeOutQuart'
         },
         strokeDasharray: {
-          value: val === 2 ? '522 1386' : '240 1386',
+          value: '202 1386',
           duration: 700,
           easing: 'easeOutQuart'
         }
@@ -215,20 +233,18 @@ export default {
     letter-spacing: 4px;
     font-size: 18px;
     background-color: #f34d61;
-    margin: 228px auto 0;
+    margin: 278px auto 0;
   }
   svg {
     position: absolute;
-    width: 300px;
-    height: 270px;
-    top: 102px;
+    top: 212px;
     z-index: -1;
   }
   path {
     fill: none;
     stroke: url(#linearGradient);;
-    stroke-width: 8;
-    stroke-dasharray: 240, 1386;
+    stroke-width: 3;
+    stroke-dasharray: 202, 1386;
   }
 }
 </style>

@@ -38,17 +38,29 @@
   z-index: 2;
 }
 .input .el-select {
-  margin-top: 136px;
-  width: 180px;
+  margin-top: 104px;
+  width: 250px;
+}
+.el-input--prefix .el-input__inner {
+  padding-left: 80px;
+}
+.el-input-group__prepend:nth-child(2) {
+  background-color: #f7bcf1;
 }
 .input .el-input-group:nth-child(3) {
   margin-top: 54px;
 }
-.el-input-group__append, .el-input-group__prepend {
+.el-input-group__append, .el-input-group__prepend, .el-input__prefix {
   background: #ffd7fb!important;
   color: #681023!important;
   border: none;
   //border-right: 1px solid #ff8392;
+}
+.el-input__prefix {
+  display: inline-block;
+  line-height: 40px;
+  width: 68px;
+  text-align: center;
 }
 .type .e-label .el-radio__input {
   position: absolute;
