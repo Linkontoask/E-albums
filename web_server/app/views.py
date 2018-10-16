@@ -19,7 +19,9 @@ def create_album(request):
             createTime=datetime.datetime.now().strftime('%Y-%m-%d'),
         )
         photo_album.save()
-    return HttpResponse({"data": {"success": "e"}})
+        return HttpResponse(json.dumps({"data": {"e": 0, "code": "success"}}), content_type="application/json")
+    return HttpResponse(json.dumps({"data": {"e": -1, "code": "{} method don't allow".format(request.method)}}),
+                        content_type="application/json")
 
 
 def upload(request):
@@ -33,6 +35,7 @@ def upload(request):
                 size=temp_file.size,
                 point=request.POST.get("point", None),
                 title=request.POST.get("title", None),
+                type=request.POST.get("type_picture", None),
                 album=PhotoAlbum.objects.filter(id=request.POST.get("album_id")).first(),
                 date=datetime.datetime.now().strftime('%Y-%m-%d')
             )
@@ -70,10 +73,19 @@ def get_album(request):
         album_type = json.loads(request.body.decode()).get("type")
         if album_type == "all":
             album_all = PhotoAlbum.objects.all()
-            data = json.dumps(
-                {"data": [{"title": i.name, "point": i.point, "createTime": i.createTime, "id": i.id,
-                           "url": Picture.objects.filter(album_id=i.id).first().file.url}
-                          for i in album_all]})
+            temp = []
+            for i in album_all:
+                try:
+                    url = Picture.objects.filter(album_id=i.id).first().file.url
+                    count = i.count
+                except Exception as e:
+                    url = None
+                    count = 0
+                temp.append({"title": i.name, "point": i.point, "createTime": i.createTime, "id": i.id,
+                             "count": count,
+                             "url": url})
+            data = json.dumps({"data": temp}
+                              )
             return HttpResponse(data)
         else:
             obj = PhotoAlbum.objects.filter(id=json.loads(request.body.decode()).get("album_id")).first()

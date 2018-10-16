@@ -16,6 +16,15 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from app import views
+from django.conf.urls.static import static
+from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-]
+    url(r'^api/upload/$', views.upload, name='upload'),
+    url(r'^api/create_album/$', views.create_album, name='create_album'),
+    url(r'^api/get_album/$', views.get_album, name='get_album'),
+    url(r'^api/get_album_info/$', views.get_album_info, name='get_album_info'),
+    url(r'^api/get_picture/$', views.get_picture, name='get_picture'),
+    url(r'^api/get_media/$', views.get_media, name='get_media'),
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

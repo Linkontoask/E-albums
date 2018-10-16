@@ -9,16 +9,17 @@ class PhotoAlbum(models.Model):
     name = models.CharField(max_length=64)
     point = models.CharField(max_length=64)
     createTime = models.CharField(max_length=128)
-    count = models.ImageField(null=True)
+    count = models.IntegerField(null=True)
 
 
 class Picture(models.Model):
     file = models.ImageField(upload_to="rec/picture/%m%d")
     size = models.IntegerField()
     name = models.CharField(max_length=64)
-    point = models.CharField(max_length=64)
+    point = models.CharField(max_length=128)
     date = models.CharField(max_length=64)
-    title = models.CharField(max_length=64)
+    title = models.CharField(max_length=128)
+    type = models.CharField(max_length=64, null=True)
     album = models.ForeignKey(PhotoAlbum, related_name="album", null=True)
 
 
