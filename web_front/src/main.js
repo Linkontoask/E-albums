@@ -6,7 +6,7 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import AlloyFinger from 'alloyfinger'
-import AlloyFingerPlugin from 'alloyfinger/vue/alloy_finger.vue'
+import AlloyFingerPlugin from 'alloyfinger/vue/alloy_finger_vue.js'
 
 import './style/global.less'
 

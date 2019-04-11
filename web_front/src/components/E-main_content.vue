@@ -1,19 +1,22 @@
 <template>
-  <div class="E-main_content">
+  <div class="E-main_content" v-loading="loading">
     <div class="content">
       <ul>
         <li v-for="(item, index) in data" :key="index" @click="frontAlbum(index)">
           <el-card class="box-card">
-          <img v-if="item.url" :src="'http://127.0.0.1:8000'+item.url" :alt="item.name">
-          <el-card class="box-card" v-if="!item.url">
-            <div v-if="!item.url" class="normal">相册里还没有照片哦,赶快来上传第一张吧!</div>
-          </el-card>
-          <div>
-            <h4>{{ item.title }}<span v-if="item.count">里面有&nbsp;{{ item.count }}&nbsp;张图片</span></h4>
-            <p class="car"><span>{{ item.point }}</span><span>{{ item.createTime }}</span></p>
-          </div>
+            <img v-if="item.url" :src="item.url" :alt="item.name">
+            <el-card class="box-card" v-if="!item.url">
+              <div v-if="!item.url" class="normal">相册里还没有照片哦,赶快来上传第一张吧!</div>
+            </el-card>
+            <div>
+              <h4>{{ item.title }}<span v-if="item.count">里面有&nbsp;{{ item.count }}&nbsp;张图片</span><span v-if="item.size">大小：{{ Math.floor(item.size / 1024) }} KB</span></h4>
+              <p class="car"><span>{{ item.point }}</span><span>{{ item.createTime }}</span></p>
+            </div>
           </el-card>
         </li>
+        <el-card class="box-card" v-if="data.length === 0">
+          <div class="normal">相册里还没有照片哦,赶快来上传第一张吧!</div>
+        </el-card>
       </ul>
     </div>
   </div>
@@ -27,27 +30,31 @@ export default {
   name: 'E-main_content',
   data () {
     return {
-        data: '',
-        el: null,
+      data: [],
+      el: null,
+      loading: true
     }
+  },
+  props: {
+    title: {type: String, default: '获取标题失败'}
   },
 
   methods: {
     frontAlbum(index) {
-      console.log(this.data[index].id)
       this.init(this.data[index].id, this.data[index].url)
     },
     init(id, url) {
       var vm = this;
       var temp = {};
-      if (id && url) {
+      if (id) {
         temp['album_id'] = id;
       } else {
         temp['type'] = 'all';
       }
+      this.loading = true;
       axios.post('/api/get_album/', temp, (e) => {
         vm.data = e.data;
-        console.log(e);
+        this.loading = false;
       });
     },
     update() {

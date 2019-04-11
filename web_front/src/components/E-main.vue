@@ -1,16 +1,18 @@
 <template xmlns:v-finger="http://www.w3.org/1999/xhtml">
   <div class="E-main"
+       v-loading="loading"
        v-finger:swipe="swipe"
        v-finger:press-move="pressMove">
     <div class="album_cls" ref="album_cls">
       <div class="head">
-        <img src="/static/IMG_3570.JPG" alt="">
+        <img :src="require('../../static/IMG_3570.jpg')" alt="">
       </div>
       <aside class="cls_content">
         <h1>相册分类</h1>
+        <el-button type="text" @click="viewOver" style="left: 2rem;position: relative;font-size: 16px;color: white;text-decoration: underline;">查看所有相册</el-button>
         <ul>
           <li v-for="(item, index) in type_pictures" @touchend.stop="aside_current(item)">
-            <em>{{ item.label }}</em>
+            <em>{{ item.title }}</em>
           </li>
         </ul>
       </aside>
@@ -26,7 +28,7 @@
         </div>
         <div class="search"></div>
       </div>
-      <e_content></e_content>
+      <e_content ref="content"></e_content>
       <div class="new">
         <div class="el_new" @click.stop="add_album_video(1)">新建相册</div>
         <div class="el_new" @click.stop="add_album_video(0)">上传</div>
@@ -49,6 +51,7 @@
   import e_upload from './base/upload'
   import e_create from './base/create'
   import mojs from 'mo-js'
+  import axios from '../router/axios'
 
 export default {
   name: 'E-main',
@@ -56,22 +59,7 @@ export default {
   components: {e_content, e_upload, e_create, },
   data () {
     return {
-      type_pictures: [{
-        label: '旅游',
-        value: '0'
-      },{
-        label: '在丰都',
-        value: '1'
-      },{
-        label: '在重庆',
-        value: '2'
-      },{
-        label: '在湖南',
-        value: '3'
-      },{
-        label: '日常(默认类型)',
-        value: '4'
-      }],
+      type_pictures: [],
       type: '相册',
       forward: true,
       show_upload: false,
@@ -82,7 +70,8 @@ export default {
       main: null,
       el_new: null,
       models: null,
-      focus_sidebar: false
+      focus_sidebar: false,
+      loading: true,
     }
   },
   watch: {
@@ -91,8 +80,13 @@ export default {
     }
   },
   methods: {
+    viewOver() {
+      this.$refs.content.init();
+      this.swipe({direction: 'Left'});
+    },
     aside_current(row) {
-      console.log(row);
+      this.$refs.content.init(row.id, row.url);
+      this.swipe({direction: 'Left'});
     },
     pressMove(e) {
 
@@ -123,11 +117,13 @@ export default {
         this.focus_sidebar = false;
       }
     },
-    closeCreate() {
+    async closeCreate() {
       this.show_create = false;
+      await this.getAlbums();
     },
-    closeUpload() {
+    async closeUpload() {
       this.show_upload = false;
+      await this.getAlbums();
     },
     add_album_video(type) {
       this.pop(); // 关闭弹窗
@@ -166,6 +162,19 @@ export default {
     },
     switchType() {
         this.type === '相册' ? this.type = '视频' : this.type = '相册'
+    },
+    getAlbums(album_id) {
+      let params = {};
+      album_id
+        ?
+          (params['album_id'] = album_id)
+        :
+          (params['type'] = 'all');
+      this.loading = true;
+      axios.post('/api/get_album/', params, (e) => {
+        this.type_pictures = e.data;
+        this.loading = false;
+      });
     }
   },
 
@@ -181,6 +190,7 @@ export default {
         delay:      'stagger(20, rand(0, 25))'
       }
     });
+    this.getAlbums();
   }
 }
 </script>
@@ -232,6 +242,7 @@ export default {
           height: 34px;
           line-height: 34px;
           padding-left: 24px;
+          text-decoration: underline;
           em {
             font-style: normal;
           }

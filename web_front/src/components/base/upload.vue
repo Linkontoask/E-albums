@@ -56,16 +56,7 @@
         <el-input placeholder="" v-model="data.point" @focus="moveLine(1)">
           <template slot="prepend">地点</template>
         </el-input>
-        <el-select v-model="data.type_picture" placeholder="" @focus="moveLine(2)" >
-          <span slot="prefix">类型</span>
-          <el-option
-            v-for="item in type_pictures"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-select v-model="data.album_id" placeholder="" @focus="moveLine(3)" style="margin-top: 153px;">
+        <el-select v-model="data.album_id" placeholder="" @focus="moveLine(2)">
           <span slot="prefix">相册</span>
           <el-option
             v-for="item in options"
@@ -96,22 +87,7 @@ export default {
         type_picture: '4'
       },
       options: [],
-      type_pictures: [{
-        label: '旅游',
-        value: '0'
-      },{
-        label: '在丰都',
-        value: '1'
-      },{
-        label: '在重庆',
-        value: '2'
-      },{
-        label: '在湖南',
-        value: '3'
-      },{
-        label: '日常(默认类型)',
-        value: '4'
-      }],
+      type_pictures: [],
       typeData: [{'type': 'picture', 'name': '图片', 'label': '1', 'url': 'static/picture.png'},{'type': 'media', 'name': '视频', 'label': '2', 'url': 'static/media.png'}],
       dialogVisible: false,
       fileList: [],

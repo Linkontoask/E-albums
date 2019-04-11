@@ -1,0 +1,12 @@
+[Unit]
+Description=e_albums.service
+
+[Service]
+WorkingDirectory=/usr/sitemap/e-albums/web_server
+ExecStart=/usr/bin/python2.7 manage.py runserver
+Restart=always
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

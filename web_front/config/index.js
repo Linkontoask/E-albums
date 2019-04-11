@@ -11,7 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      "/api": {target: 'http://127.0.0.1:8000', changeOrigin: true, pathRewrite: {'^/api': '/api'}}
+      "/api": {target: 'http://127.0.0.1:8000', changeOrigin: true, pathRewrite: {'^/api': '/api'}},
+      "/media": {target: 'http://127.0.0.1:8000', changeOrigin: true, pathRewrite: {'^/media': '/media'}}
     },
 
     // Various Dev Server settings
@@ -45,7 +46,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps
