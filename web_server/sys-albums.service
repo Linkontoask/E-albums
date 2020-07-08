@@ -1,0 +1,15 @@
+[Unit]
+Description=albums.service
+After=network.target
+
+[Service]
+WorkingDirectory=/usr/sitemap/e-albums/web_server
+ExecStart=/usr/bin/python3 manage.py runserver 0.0.0.0:8000
+Restart=always
+Type=simple
+NotifyAccess=all
+Environment=MALLOC_ARENA_MAX=2
+Environment=MALLOC_MMAP_MAX_=655360
+
+[Install]
+WantedBy=multi-user.target
