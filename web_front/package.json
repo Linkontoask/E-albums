@@ -12,7 +12,7 @@
   "dependencies": {
     "alloyfinger": "^0.1.15",
     "animejs": "^3.0.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "element-ui": "^2.4.8",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
